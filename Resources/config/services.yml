@@ -1,0 +1,13 @@
+services:
+    ex_getstat.job_executor:
+        class: Keboola\GetStatExtractorBundle\Job\Executor
+        arguments: ['@keboola_extractor.configuration', '@ex_getstat.extractor', '@logger', '@syrup.temp', '@syrup.encryptor']
+    ex_getstat.extractor:
+        class: Keboola\GetStatExtractorBundle\GetStatExtractor
+        arguments: ['%memory_limit%']
+    keboola_extractor.configuration:
+        class: Keboola\ExtractorBundle\Config\Configuration
+        arguments: ['%app_name%', '@syrup.temp', '%required_attributes%']
+parameters:
+    required_attributes: ['apiKey']
+    job_config_fields: null
