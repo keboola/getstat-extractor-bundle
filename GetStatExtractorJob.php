@@ -73,6 +73,7 @@ class GetStatExtractorJob extends JsonRecursiveJob
 	{
 		if (!empty($response->attributes()->totalresults)) {
 			$data = $this->parser->xmlToObject($response);
+
 			return parent::parse($data, $parentId);
 		} else {
 			Logger::log("warning", "No results returned by {$this->configName}", (array) $response->attributes());
@@ -87,7 +88,6 @@ class GetStatExtractorJob extends JsonRecursiveJob
 	 */
 	protected function download($request)
 	{
-		Logger::log('debug', $request->getUrl());
 		return parent::download($request, \Keboola\ExtractorBundle\Extractor\Jobs\RestJob::XML);
 	}
 
