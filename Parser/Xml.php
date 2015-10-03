@@ -5,6 +5,7 @@ namespace Keboola\GetStatExtractorBundle\Parser;
 use Syrup\ComponentBundle\Exception\SyrupComponentException,
 	Syrup\ComponentBundle\Exception\UserException;
 use	Keboola\Json\Parser;
+use	Keboola\Utils\Utils;
 
 class Xml extends Parser
 {
@@ -26,7 +27,7 @@ class Xml extends Parser
 	protected function nullEmptyObjects($data)
 	{
 		foreach($data as $k => &$v) {
-			if (empty($v) || (is_object($v) && $this->isEmptyObject($v))) {
+			if (empty($v) || (is_object($v) && Utils::isEmptyObject($v))) {
 				$v = null;
 			} elseif (!is_scalar($v)) {
 				$v = $this->nullEmptyObjects($v);

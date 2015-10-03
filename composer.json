@@ -7,7 +7,8 @@
     "repositories": [],
     "require": {
         "keboola/extractor-bundle": "2.0.*@dev",
-        "keboola/codebuilder": "~0.1.0"
+        "keboola/codebuilder": "~0.1.0",
+        "keboola/json-parser": "1.0.4 as 0.2.0"
     },
     "require-dev": {
         "phpunit\/phpunit": "3.7.*"

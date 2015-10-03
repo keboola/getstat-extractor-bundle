@@ -28,8 +28,8 @@ class GetStatExtractor extends Extractor
 		);
 		$client->getEmitter()->attach($this->getBackoff(8, [500, 502, 503, 504, 408, 420, 429]));
 
-		$parser = new Xml(\Monolog\Registry::getInstance('extractor'));
-		$parser->setAllowArrayStringMix(true);
+		$parser = Xml::create(\Monolog\Registry::getInstance('extractor'));
+		$parser->getStruct()->setAutoUpgradeToArray(true);
 		$builder = new Builder();
 
 		foreach($config->getJobs() as $jobConfig) {
