@@ -10,6 +10,7 @@ use GuzzleHttp\Client as Client;
 use Keboola\GetStatExtractorBundle\GetStatExtractorJob,
 	Keboola\GetStatExtractorBundle\Parser\Xml;
 use	Keboola\Code\Builder;
+use	Keboola\Json\Parser as JsonParser;
 
 class GetStatExtractor extends Extractor
 {
@@ -28,7 +29,16 @@ class GetStatExtractor extends Extractor
 		);
 		$client->getEmitter()->attach($this->getBackoff(8, [500, 502, 503, 504, 408, 420, 429]));
 
-		$parser = Xml::create(\Monolog\Registry::getInstance('extractor'));
+		if (!empty($this->metadata['json_parser.struct']) && is_string($this->metadata['json_parser.struct'])) {
+			$struct = unserialize($this->metadata['json_parser.struct']);
+			if (!is_array($struct)) {
+				$struct = [];
+			}
+		} else {
+			$struct = [];
+		}
+
+		$parser = Xml::create(\Monolog\Registry::getInstance('extractor'), $struct);
 		$parser->getStruct()->setAutoUpgradeToArray(true);
 		$builder = new Builder();
 
@@ -51,5 +61,12 @@ class GetStatExtractor extends Extractor
 		$this->updateParserMetadata($parser);
 
 		return $parser->getCsvFiles();
+	}
+
+	protected function updateParserMetadata(JsonParser $parser)
+	{
+		if ($parser->hasAnalyzed()) {
+			$this->metadata['json_parser.struct'] = serialize($parser->getStruct()->getStruct());
+		}
 	}
 }
