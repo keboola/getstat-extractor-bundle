@@ -16,6 +16,7 @@ class Xml extends Parser
 	public function xmlToObject(\SimpleXMLElement $xml)
 	{
 		$data = json_decode(json_encode($xml));
+		$data = $this->fixNullValues($data);
 		return $this->nullEmptyObjects($data);
 	}
 
@@ -31,6 +32,19 @@ class Xml extends Parser
 				$v = null;
 			} elseif (!is_scalar($v)) {
 				$v = $this->nullEmptyObjects($v);
+			}
+			unset($v);
+		}
+		return $data;
+	}
+
+	protected function fixNullValues($data)
+	{
+		foreach($data as $k => &$v) {
+			if (is_scalar($v) && $v == 'none') {
+				$v = null;
+			} elseif (!is_scalar($v)) {
+				$v = $this->fixNullValues($v);
 			}
 			unset($v);
 		}
