@@ -17,7 +17,8 @@ class Xml extends Parser
 	{
 		$data = json_decode(json_encode($xml));
 		$data = $this->fixNullValues($data);
-		return $this->nullEmptyObjects($data);
+		$data = $this->nullEmptyObjects($data);
+        return $this->fixResult($data);
 	}
 
 	/**
@@ -50,4 +51,14 @@ class Xml extends Parser
 		}
 		return $data;
 	}
+
+	private function fixResult($data)
+    {
+        // if there is only one Result in response in is converted to object instead to array of one object
+        // so we are fixing it here
+        if (isset($data->Result) && !is_array($data->Result)) {
+            $data->Result = [$data->Result];
+        }
+        return $data;
+    }
 }
